@@ -82,7 +82,7 @@ namespace groveale
             }
 
             // Select user email from sys_user table
-            var url = $"https://{_settings.Domain}.service-now.com/api/now/table/incident?caller_id={_serviceNowUser.sys_id}&sysparm_fields=number,short_description,sys_updated_on";
+            var url = $"https://{_settings.Domain}.service-now.com/api/now/table/incident?caller_id={_serviceNowUser.sys_id}&sysparm_fields=number,short_description,sys_updated_on,category";
             var response = await _client.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
@@ -93,12 +93,15 @@ namespace groveale
             return await response.Content.ReadAsAsync<IncidentApiResponse>();
         }
 
-        public async Task CreateIncidentFromUserAsync(Incident fromSPO)
+        public async Task<IncidentCreateApiResponse> CreateIncidentFromUserAsync(Incident fromSPO)
         {
             if (_serviceNowUser == null)
             {
                 throw new Exception("ServiceNow user not initialized");
             }
+
+            // add the caller id to the incident (logged in user)
+            fromSPO.caller_id = _serviceNowUser.sys_id;
 
             // Select user email from sys_user table
             var url = $"https://{_settings.Domain}.service-now.com/api/now/table/incident";
@@ -109,6 +112,8 @@ namespace groveale
             {
                 throw new Exception($"Failed to post data from API: {response.StatusCode} - {response.ReasonPhrase}");
             }
+
+            return await response.Content.ReadAsAsync<IncidentCreateApiResponse>();
         }
     }
 
@@ -142,9 +147,22 @@ namespace groveale
         public string category { get; set; }
     }
 
+    public class IncidentResponse
+    {
+        public string number { get; set; }
+        public string short_description { get; set; }
+        public DateTime sys_updated_on { get; set; }
+        public string category { get; set; }
+    }
+
     public class IncidentApiResponse
     {
         public List<Incident> result { get; set; }
+    }
+
+    public class IncidentCreateApiResponse
+    {
+        public IncidentResponse result { get; set; }
     }
 
 

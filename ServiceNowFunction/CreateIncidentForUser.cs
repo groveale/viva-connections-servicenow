@@ -19,17 +19,36 @@ namespace groveale
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            string upn = req.Query["upn"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            upn = upn ?? data?.upn;
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+            Incident incident = data?.incident.ToObject<Incident>();
 
-            return new OkObjectResult(responseMessage);
+            if (incident == null) {
+                return new BadRequestObjectResult("Please pass an incident in the request body");
+            }
+
+            // Load settings and initialize GraphHelper with app only auth
+            var settings = Settings.LoadSettings();
+
+            try {
+                var serviceNowHelper = new ServiceNowHelper(settings);
+
+                // Initialize the ServiceNowHelper with the user's email address
+                await serviceNowHelper.Init(upn);
+
+            
+                var incidents = await serviceNowHelper.CreateIncidentFromUserAsync(incident);
+
+                return new OkObjectResult(incidents);
+
+            }
+            catch (Exception ex) {
+                return new BadRequestObjectResult("Error connecting to Service Now: " + ex.Message);
+            }
         }
     }
 }
