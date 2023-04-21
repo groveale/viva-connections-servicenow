@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "service-now-card-client-side-solution",
+    "id": "6735798c-41f7-4e8a-bbbe-97fbe8e42e3e",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.15.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "ServiceNowCard description"
+      },
+      "longDescription": {
+        "default": "ServiceNowCard description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "service-now-card Feature",
+        "description": "The feature that activates elements of the service-now-card solution.",
+        "id": "8a454d9f-ee51-4d3a-96f4-1520b8d01c0e",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/service-now-card.sppkg"
+  }
+}
