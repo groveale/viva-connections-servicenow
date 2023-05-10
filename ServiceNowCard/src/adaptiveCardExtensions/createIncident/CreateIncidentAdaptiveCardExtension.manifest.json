@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx/adaptive-card-extension-manifest.schema.json",
-  "id": "59a8754d-f687-40e2-97a9-14b5e1d4a0ee",
-  "alias": "MyIncidentsAdaptiveCardExtension",
+  "id": "14ff9cee-a811-4d05-beea-e3ede31a7798",
+  "alias": "CreateIncidentAdaptiveCardExtension",
   "componentType": "AdaptiveCardExtension",
 
   // The "*" signifies that the version should be taken from the package.json
@@ -16,11 +16,11 @@
   "preconfiguredEntries": [{
     "groupId": "bd067b1e-3ad5-4d5d-a5fe-505f07d7f59c", // Dashboard
     "group": { "default": "Dashboard" },
-    "title": { "default": "MyIncidents" },
-    "description": { "default": "MyIncidents description" },
-    "officeFabricIconFontName": "ServiceActivity",
+    "title": { "default": "CreateIncident" },
+    "description": { "default": "CreateIncident description" },
+    "officeFabricIconFontName": "CRMServices",
     "properties": {
-      "title": "MyIncidents"
+      "title": "CreateIncident"
     },
     "cardSize": "Medium"
   }]

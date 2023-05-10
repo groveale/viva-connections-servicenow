@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace groveale
 {
@@ -38,9 +39,7 @@ namespace groveale
             }
             else {
                 _serviceNowUser = usersResponse.result[0];
-            }
-
-            
+            } 
         }
 
         public async Task<TokenResponse> GetToken() 
@@ -115,56 +114,21 @@ namespace groveale
 
             return await response.Content.ReadAsAsync<IncidentCreateApiResponse>();
         }
+    
+        public async Task<ServiceNowChangeTicketResponse> GetChangeFromNumber(string changeNumber)
+        {
+            // Select user email from sys_user table
+            var url = $"https://{_settings.Domain}.service-now.com/api/now/table/change_request?number={changeNumber}&sysparm_fields=end_date,number,short_description,assignment_group,u_owner_group,state,type,assigned_to,start_date";
+            var response = await _client.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to get data from API: {response.StatusCode} - {response.ReasonPhrase}");
+            }
+
+            //return JsonConvert.DeserializeObject<ServiceNowChangeTicketResponse>(response.Content.ToString());
+
+            return await response.Content.ReadAsAsync<ServiceNowChangeTicketResponse>();
+        }
     }
-
-    public class User
-    {
-        public string user_name  { get; set; }
-        public string email { get; set; }
-        public string sys_id { get; set; }
-    }
-
-    public class UserApiResponse
-    {
-        public List<User> result { get; set; }
-    }
-
-    public class TokenResponse
-    {
-        public string access_token { get; set; }
-        public string refresh_token { get; set; }
-        public string scope { get; set; }
-        public string token_type { get; set; }
-        public int expires_in { get; set; }
-    }
-
-    public class Incident
-    {
-        public string number { get; set; }
-        public string short_description { get; set; }
-        public string caller_id { get; set; }
-        public DateTime sys_updated_on { get; set; }
-        public string category { get; set; }
-    }
-
-    public class IncidentResponse
-    {
-        public string number { get; set; }
-        public string short_description { get; set; }
-        public DateTime sys_updated_on { get; set; }
-        public string category { get; set; }
-    }
-
-    public class IncidentApiResponse
-    {
-        public List<Incident> result { get; set; }
-    }
-
-    public class IncidentCreateApiResponse
-    {
-        public IncidentResponse result { get; set; }
-    }
-
-
 }
- 

@@ -9,10 +9,19 @@
           "manifest": "./src/adaptiveCardExtensions/myIncidents/MyIncidentsAdaptiveCardExtension.manifest.json"
         }
       ]
+    },
+    "create-incident-adaptive-card-extension": {
+      "components": [
+        {
+          "entrypoint": "./lib/adaptiveCardExtensions/createIncident/CreateIncidentAdaptiveCardExtension.js",
+          "manifest": "./src/adaptiveCardExtensions/createIncident/CreateIncidentAdaptiveCardExtension.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
-    "MyIncidentsAdaptiveCardExtensionStrings": "lib/adaptiveCardExtensions/myIncidents/loc/{locale}.js"
+    "MyIncidentsAdaptiveCardExtensionStrings": "lib/adaptiveCardExtensions/myIncidents/loc/{locale}.js",
+    "CreateIncidentAdaptiveCardExtensionStrings": "lib/adaptiveCardExtensions/createIncident/loc/{locale}.js"
   }
 }

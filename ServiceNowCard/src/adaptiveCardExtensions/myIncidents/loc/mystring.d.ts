@@ -1,11 +1,16 @@
 declare interface IMyIncidentsAdaptiveCardExtensionStrings {
   PropertyPaneDescription: string;
+  GroupName: string;
   TitleFieldLabel: string;
-  Title: string;
-  SubTitle: string;
-  PrimaryText: string;
-  Description: string;
-  QuickViewButton: string;
+  IconPropertyFieldLabel: string;
+  QuickViewButtonText: string;
+  CardViewTextSingular: string;
+  CardViewTextPlural: string;
+  CardViewNoTasks: string;
+  CardViewDescription: string;
+  QuickViewDescription: string;
+  OpenedLabel: string;
+  OverdueLabel: string;
 }
 
 declare module 'MyIncidentsAdaptiveCardExtensionStrings' {

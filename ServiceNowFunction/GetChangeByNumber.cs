@@ -10,20 +10,20 @@ using Newtonsoft.Json;
 
 namespace groveale
 {
-    public static class GetIncidentsForUser
+    public static class GetChangeByNumber
     {
-        [FunctionName("GetIncidentsForUser")]
+        [FunctionName("GetChangeByNumber")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string upn = req.Query["upn"];
+             string changeNo = req.Query["changeNo"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            upn = upn ?? data?.upn;
+            changeNo = changeNo ?? data?.changeNo;
 
             // Load settings and initialize GraphHelper with app only auth
             var settings = Settings.LoadSettings();
@@ -31,17 +31,13 @@ namespace groveale
             try {
                 var serviceNowHelper = new ServiceNowHelper(settings);
 
-                // Initialize the ServiceNowHelper with the user's email address
-                await serviceNowHelper.Init(upn);
+                // Initialize the ServiceNowHelper without the user's email address
+                await serviceNowHelper.Init(string.Empty);
 
-                // Get the incidents for the user
-                var incidents = await serviceNowHelper.GetIncidentsForUserAsync();
+                // Get the change for the number
+                var changes = await serviceNowHelper.GetChangeFromNumber(changeNo);
 
-                foreach (var incident in incidents.result) {
-                    incident.LastUpdatedString = incident.sys_updated_on.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                }
-
-                return new OkObjectResult(incidents);
+                return new OkObjectResult(changes);
 
             }
             catch (Exception ex) {
