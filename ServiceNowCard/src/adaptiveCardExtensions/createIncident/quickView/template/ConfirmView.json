@@ -169,7 +169,10 @@
                       "actions": [{
                         "type": "Action.Submit",
                         "title": "${$root.strings.SubmitButtonLabel}",
-                        "style": "positive"
+                        "style": "positive",
+                        "data": {
+                          "id": "submit"
+                        }
                       }]
                     }]
                   }

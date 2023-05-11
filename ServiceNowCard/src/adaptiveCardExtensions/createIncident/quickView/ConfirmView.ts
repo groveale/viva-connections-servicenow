@@ -36,10 +36,16 @@ export class ConfirmView extends BaseAdaptiveCardView<
           this.quickViewNavigator.close();
         } else {
 
-        // send to api
-        await this.CreateTicketInServiceNow()
-
-        this.quickViewNavigator.close();
+          try {
+            // send to api
+            await this.CreateTicketInServiceNow()
+          }
+          catch (e){
+            console.log(`Error: ${e.message}`)
+          } finally {
+          // close the dialog
+          this.quickViewNavigator.close();
+          }
         }
       }
     }
