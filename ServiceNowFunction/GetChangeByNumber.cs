@@ -19,11 +19,30 @@ namespace groveale
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-             string changeNo = req.Query["changeNo"];
+            string changeNo = req.Query["changeNo"];
+            string debug = req.Query["debug"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             changeNo = changeNo ?? data?.changeNo;
+            debug = debug ?? data?.debug;
+
+            if (debug == "true") {
+                return new OkObjectResult(new ServiceNowChangeTicketResponse 
+                {
+                    Result = new System.Collections.Generic.List<ChangeTicket>
+                    {
+                        new ChangeTicket
+                        {
+                            number = "CHG0000001",
+                            short_description = "Test Change",
+                            start_date = "02/07/2023 12:37:51",
+                            end_date = "03/07/2023 12:37:51",
+                            state = "1"
+                        }
+                    }
+                });
+            }
 
             // Load settings and initialize GraphHelper with app only auth
             var settings = Settings.LoadSettings();

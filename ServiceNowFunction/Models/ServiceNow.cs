@@ -68,15 +68,15 @@ namespace groveale
 
     public class ChangeTicket
     {
-        public string end_date { get; set; }
-        public string number { get; set; }
-        public string short_description { get; set; }
-        public AssignmentGroup assignment_group { get; set; }
-        public UOwnerGroup u_owner_group { get; set; }
-        public string state { get; set; }
-        public string type { get; set; }
-        public AssignedTo assigned_to { get; set; }
-        public string start_date { get; set; }
+        public string? end_date { get; set; }
+        public string? number { get; set; }
+        public string? short_description { get; set; }
+        public AssignmentGroup? assignment_group { get; set; }
+        public UOwnerGroup? u_owner_group { get; set; }
+        public string? state { get; set; }
+        public string? type { get; set; }
+        public AssignedTo? assigned_to { get; set; }
+        public string? start_date { get; set; }
     }
 
 
@@ -89,5 +89,20 @@ namespace groveale
     public class ServiceNowChangeTicketResponse
     {
         public List<ChangeTicket> Result { get; set; }
+    }
+
+    public class ServiceNowChangeTicketResponseNonList
+    {
+        public ChangeTicket Result { get; set; }
+    }
+
+    public class ServiceNowCreateChangeTicketResponse
+    {
+        public ServiceNowChangeCreatedDetails Result { get; set; }
+    }
+
+    public class ServiceNowChangeCreatedDetails
+    {
+        public string Details {get;set;}
     }
 }

@@ -29,17 +29,20 @@ namespace groveale
             var token = await GetToken();
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.access_token);
 
-            // Get the user from the email address
-            var usersResponse = await GetUserFromEmailAsync(upnFromSPO);
-
-            if (usersResponse.result.Count == 0)
+            if (!string.IsNullOrEmpty(upnFromSPO))
             {
-                // No service now user found, log error and exit
-                throw new Exception($"No user found in ServiceNow with email {upnFromSPO}");
+                // Get the user from the email address
+                var usersResponse = await GetUserFromEmailAsync(upnFromSPO);
+
+                if (usersResponse.result.Count == 0)
+                {
+                    // No service now user found, log error and exit
+                    throw new Exception($"No user found in ServiceNow with email {upnFromSPO}");
+                }
+                else {
+                    _serviceNowUser = usersResponse.result[0];
+                } 
             }
-            else {
-                _serviceNowUser = usersResponse.result[0];
-            } 
         }
 
         public async Task<TokenResponse> GetToken() 
@@ -129,6 +132,42 @@ namespace groveale
             //return JsonConvert.DeserializeObject<ServiceNowChangeTicketResponse>(response.Content.ToString());
 
             return await response.Content.ReadAsAsync<ServiceNowChangeTicketResponse>();
+        }
+
+        public async Task<ServiceNowCreateChangeTicketResponse> CreateChange(ChangeTicket fromPS)
+        {
+            // Select user email from sys_user table
+            var url = $"https://{_settings.Domain}.service-now.com/api/now/table/change_request";
+
+            var response = await _client.PostAsJsonAsync(url, fromPS);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to post data from API: {response.StatusCode} - {response.ReasonPhrase}");
+            }
+
+            var sNowChange = await response.Content.ReadAsAsync<ServiceNowChangeTicketResponseNonList>();
+
+            if (!String.IsNullOrEmpty(sNowChange.Result.number))
+            {
+                return new ServiceNowCreateChangeTicketResponse()
+                { 
+                    Result = new ServiceNowChangeCreatedDetails() 
+                    { 
+                        Details = $"{sNowChange.Result.number} (RAISED)" 
+                    } 
+                };
+            } 
+            else 
+            {
+                return new ServiceNowCreateChangeTicketResponse()
+                { 
+                    Result = new ServiceNowChangeCreatedDetails() 
+                    { 
+                        Details = $"Error creating change ticket" 
+                    } 
+                };
+            }
         }
     }
 }
